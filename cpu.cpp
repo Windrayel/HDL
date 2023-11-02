@@ -26,13 +26,19 @@ CPU::~CPU()
 void CPU::mainThread()
 {
     int data_size = 5;
-    message req{};
-    
+
+
+    message msg{};
     do {
-        req = bus_read();
-        neurons.push_back(req.neuron);
-        weights.push_back(req.weight);
-    } while (!req.is_end);
+        msg = bus_read();
+        neurons.push_back(msg.neuron);
+        weights.push_back(msg.weight);
+    } while (!msg.is_end);
+    for (int i = 0; i < neurons.size(); i++) {
+        partial_sum += neurons[i] * weights[i];
+    }
+
+
     
     sc_stop();
 
@@ -43,7 +49,7 @@ message CPU::bus_read()
     return message{0, 0, 0, true, false};
 }
 
-void CPU::bus_write(int layer, int neuron)
+void CPU::bus_write(int layer, int neuron, bool is_req)
 {
     wait();
     data_bo.write(message{unit_num , 0, 0, false, true });

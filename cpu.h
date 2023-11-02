@@ -19,9 +19,10 @@ SC_MODULE(CPU)
     
     void mainThread();
     int unit_num;
+    
 private:
 
-    void bus_write(int addr, int data);
+    void bus_write(int addr, int data, bool is_req);
     message bus_read();
     std::vector<double> neurons;
     std::vector<double> weights;
